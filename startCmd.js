@@ -1,5 +1,23 @@
 function startCmd(message, client, member, fs) {
 
+  var msgDoor1 = `**\`!choix 1A\`** ou **\`!choix 1B\`**`;
+  /*`**${member}** voilà que vous avancez tranquillement en suivant le bord de la rivière.\nUn choix s'offre à vous...\nSur votre droite vous appercevez un pont en direction du quel semblent provenir un bruit de foule...\
+Néanmoins, il ne semble pas très solide :confused:\n
+Préférez-vous:\n\u0031\u20E3 - Prendre le risque de traverser le pont ?\ntapez: **\`!traverser le pont\`**\n\u0032\u20E3 - Continuer votre route et traverser plus tard ?\ntapez: **\`!continuer ma route\`**`;
+*/
+  var msgDoor2 = `**\`!choix 2A\`** ou **\`!choix 2B\`**`;
+  /*`**${member}** les orties vous piquent les jambes !\nCela commence à vous agacer...\n\nVous avez le choix, préférez-vous:
+\u0031\u20E3 - Continuer à travers le champs d'orties ? (ca démange un peu mais vous êtes un warrior après tout !)\ntapez: **\`!traverser le champs d'orties\`**
+\u0032\u20E3 - Couper à travers champs et mettre un terme à cette torture ?\ntapez: **\`!couper à travers champs\`**`;
+*/
+  var msgDoor3 = `**\`!choix 3A\`** ou **\`!choix 3B\`**`;
+  /*`**${member}** pas facile d'avancer quand on y voit rien à ce point... :confused:\nLe brouillard semble s'estomper un peu plus loin, vous pouvez:\n
+\u0031\u20E3 - Continuer pour sortir du brouillard\ntapez: **\`!sortir du brouillard\`**\n\u0032\u20E3 - Continuer dans le brouillard ?\ntapez: **\`!continuer dans le brouillard\`**`;
+*/
+  var msgDoor4 = `**\`!choix 4A\`** ou **\`!choix 4B\`**`;
+  /*`**${member}** vous avez maintenant parcouru(e) quelques kilomètres, la vue est agréable mais ne vous laissez pas endormir par le paysage !\nUn peu plus loin sur votre droite vous semblez percevoir un santier mais...`
+*/
+
   	if (!fs.existsSync(startedUsersRep + member.id + '.js')) {
   		fs.createFileSync(startedUsersRep + member.id + '.js')
   		console.log(` ${member.user.username} vient de se lancer dans le labyrinthe`)
@@ -7,10 +25,10 @@ function startCmd(message, client, member, fs) {
 
   	message.reply(`votre quête à la recherche des membres de cette communauté vient de commencer !\n
 En premier lieu, je vais vous demander de faire un premier choix entre l'une de ces **4 portes principales**:\n
- \u0031\u20E3 - La première vous fait suivre le cours d'une rivière.
- \u0032\u20E3 - La seconde nécessite de traverser un champs d'orties (ca pique mais on y survit).
- \u0033\u20E3 - La troisième ne vous permet pas de voir à l'horizon, il y a beaucoup trop de brouillard.
- \u0034\u20E3 - La quatrième (et dernière du choix) semble mener sur un jadin plutot bien fleurit.`)
+ \u0031\u20E3 - **${chanDoor1}**
+ \u0032\u20E3 - **${chanDoor2}**
+ \u0033\u20E3 - **${chanDoor3}**
+ \u0034\u20E3 - **${chanDoor4}**`)
   	.then(msg => {
       msg.react("\u0031\u20E3").then(msgReact0 => {
         msg.react("\u0032\u20E3").then(msgReact1 => {
@@ -31,39 +49,48 @@ En premier lieu, je vais vous demander de faire un premier choix entre l'une de 
           } else if ((user.id == message.author.id) && (reaction.message.id == msg.id)) {
 
             if (reaction.emoji == "\u0031\u20E3") {
-              compl = `opté(e) pour suivre le cours de ${rivChan}`;
-              role = rivRole
-              rep = rivUsersRep
-              chan = rivChan
-              nextMsg = rivMsg
+              compl = `opté(e) pour la ${chanDoor1}`;
+              role = door1Role
+              rep = door1UsersRep
+              file = "./resources/element_eau.png"
+              minFile = "./resources/element_eau_min.png"
+              chan = chanDoor1
+              nextMsg = msgDoor1
             }
             if (reaction.emoji == "\u0032\u20E3") {
-              compl = `décidé(e) de passer par ${ortChan}`;
-              role = ortRole
-              rep = ortUsersRep
-              chan = ortChan
-              nextMsg = ortMsg
+              compl = `décidé(e) de passer par la ${chanDoor2}`;
+              role = door2Role
+              rep = door2UsersRep
+              file = "./resources/element_feu.png"
+              minFile = "./resources/element_feu_min.png"
+              chan = chanDoor2
+              nextMsg = msgDoor2
             }
             if (reaction.emoji == "\u0033\u20E3") {
-              compl = `choisi de passer par ${brouChan}`;
-              role = brouRole
-              rep = brouUsersRep
-              chan = brouChan
-              nextMsg = brouMsg
+              compl = `choisi de passer par la ${chanDoor3}`;
+              role = door3Role
+              rep = door3UsersRep
+              file = "./resources/element_air.png"
+              minFile = "./resources/element_air_min.png"
+              chan = chanDoor3
+              nextMsg = msgDoor3
             }
             if (reaction.emoji == "\u0034\u20E3") {
-              compl = `décidé de passer par ${jarChan}`;
-              role = jarRole
-              rep = jarUsersRep
-              chan = jarChan
-              nextMsg = jarMsg
+              compl = `décidé de passer par la ${chanDoor4}`;
+              role = door4Role
+              rep = door4UsersRep
+              file = "./resources/element_terre.png"
+              minFile = "./resources/element_terre_min.png"
+              chan = chanDoor4
+              nextMsg = msgDoor4
             }
             if ((msg != undefined)||(msg != null)) msg.delete();
             member.addRole(role).then(addRole => {
             enterChan.overwritePermissions(member, { SEND_MESSAGES: false })
             fs.createFileSync(rep + user.id + '.js')
-            enterChan.send(`**${message.author.username}** vous avez ${compl} pour valider votre quête.\n\n**Bon courage !** :wink:\n\n**PS:** Vous pouvez recommencer du début à l'aide de la commande: **\`!restart\`**`).then(msg => msg.delete(10000))
-            chan.send(nextMsg).then(msg => msg.delete(10000))
+            enterChan.send(`**${message.author.username}** vous avez ${compl} pour valider votre quête.`, {files:[minFile]})
+            .then(msg => enterChan.send(`**Bon courage !** :wink:\n\n**PS:** Vous pouvez recommencer du début à l'aide de la commande: **\`!restart\`**`).then(msg => msg.delete(10000)) && msg.delete(10000))
+            chan.send(nextMsg, {files:[file]}).then(msg => msg.delete(15000))
           })   
         }
             
@@ -71,6 +98,7 @@ En premier lieu, je vais vous demander de faire un premier choix entre l'une de 
     })
 
   })
+  message.delete(300)
 
 }
 

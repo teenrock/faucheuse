@@ -1,4 +1,4 @@
-function restartCmd(message, member, fs) {
+function restartCmd(message, client, member, fs) {
 
   	console.log(` ${member.user.username} a souhaité recommancé le labyrinthe`)
   	if (fs.existsSync(startedUsersRep + member.id + '.js')) fs.unlinkSync(startedUsersRep + member.id + '.js') && console.log(` Son fichier de configuration situé dans le dossier ${folder} a été supprimé`)
@@ -18,7 +18,7 @@ function restartCmd(message, member, fs) {
 	if (message.channel == enterChan) {
 	  message.reply(`vous souhaitez (re)commencer votre quête ?\nJe vous invite taper ici-même la commande: **\`!start\`**`).then(msg => msg.delete(5000))
 	} else {
-	  message.reply(`vous souhaitez (re)commencer votre quête ?\nJe vous invite à retourner sur **>>> ${enterChan} <<<**\net y taper la commande: **\`!start\`**`).then(msg => msg.delete(5000));
+	  message.reply(`vous souhaitez (re)commencer votre quête ?\nJe vous invite à retourner sur :\n**>>> ${enterChan} <<<**\net y taper la commande: **\`!start\`**`).then(msg => msg.delete(5000));
 	}
 
 }

@@ -1,69 +1,69 @@
 function comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs) {
   
-  var comebackCmd = ((cmd == "!faire demi-tour")||(cmd == "!faire demi tour"));
+  var comebackCmd = ((cmd == "faire demi-tour")||(cmd == "faire demi tour"));
   var doorCBmsg = `à ce stade votre seul moyen de faire marche arrière est de recommencer.\nSi c'est ce que vous souhaitez, je vous invite à taper ici-même la commande: **\`!restart\`**`;
   
   if (comebackCmd) {
 
   	// 4 PRINCIPALS DOORS
-    if (message.channel == rivChan) {
+    if (message.channel == chanDoor1) {
       if ((!fs.existsSync(rep_1A + fileName) && (!fs.existsSync(rep_1B + fileName)))) { // l'utilisateur ne provient d'aucune direction
       	return message.reply(doorCBmsg).then(reply => reply.delete(10000));
       } else if (fs.existsSync(rep_1A + fileName)) {
-      	member.addRole(role_1A).then(addRole => member.removeRole(rivRole));
+      	member.addRole(role_1A).then(addRole => member.removeRole(door1Role));
       	if (fs.existsSync(rep_1B + fileName)) fs.unlinkSync(rep_1B + fileName)
       } else if (fs.existsSync(rep_1B + fileName)) {
-      	member.addRole(role_1B).then(addRole => member.removeRole(rivRole));
+      	member.addRole(role_1B).then(addRole => member.removeRole(door1Role));
       	if (fs.existsSync(rep_1A + fileName)) fs.unlinkSync(rep_1A + fileName)
       }
 
-    } else if (message.channel == ortChan) {
+    } else if (message.channel == chanDoor2) {
       if ((!fs.existsSync(rep_2A + fileName) && (!fs.existsSync(rep_2B + fileName)))) { // l'utilisateur ne provient d'aucune direction
       	return message.reply(doorCBmsg).then(reply => reply.delete(10000));
       } else if (fs.existsSync(rep_2A + fileName)) {
-      	member.addRole(role_2A).then(addRole => member.removeRole(ortRole));
+      	member.addRole(role_2A).then(addRole => member.removeRole(door2Role));
       } else if (fs.existsSync(rep_2B + fileName)) {
-      	member.addRole(role_2B).then(addRole => member.removeRole(ortRole));
+      	member.addRole(role_2B).then(addRole => member.removeRole(door2Role));
       }
 
-    } else if (message.channel == brouChan) {
+    } else if (message.channel == chanDoor3) {
       if ((!fs.existsSync(rep_3A + fileName) && (!fs.existsSync(rep_3B + fileName)))) { // l'utilisateur ne provient d'aucune direction
       	return message.reply(doorCBmsg).then(reply => reply.delete(10000));
       } else if (fs.existsSync(rep_3A + fileName)) {
-      	member.addRole(role_3A).then(addRole => member.removeRole(brouRole));
+      	member.addRole(role_3A).then(addRole => member.removeRole(door3Role));
       } else if (fs.existsSync(rep_3B + fileName)) {
-      	member.addRole(role_3B).then(addRole => member.removeRole(brouRole));
+      	member.addRole(role_3B).then(addRole => member.removeRole(door3Role));
       }
 
-    } else if (message.channel == jarChan) {
+    } else if (message.channel == chanDoor4) {
       if ((!fs.existsSync(rep_4A + fileName) && (!fs.existsSync(rep_4B + fileName)))) { // l'utilisateur ne provient d'aucune direction
       	return message.reply(doorCBmsg).then(reply => reply.delete(10000));
       } else if (fs.existsSync(rep_4A + fileName)) {
-      	member.addRole(role_4A).then(addRole => member.removeRole(jarRole));
+      	member.addRole(role_4A).then(addRole => member.removeRole(door4Role));
       } else if (fs.existsSync(rep_4B + fileName)) {
-      	member.addRole(role_4B).then(addRole => member.removeRole(jarRole));
+      	member.addRole(role_4B).then(addRole => member.removeRole(door4Role));
       }
 
     // LABYRINTHE CHANNELS
     } else if (msgChan == chan_1A) {
-  	  if (fs.existsSync(rivUsersRep + fileName)) {
-  	    member.addRole(rivRole);
+  	  if (fs.existsSync(door1UsersRep + fileName)) {
+  	    member.addRole(door1Role);
   	    if (fs.existsSync(rep_1B + fileName)) fs.unlinkSync(rep_1B + fileName);
   	  } else if (fs.existsSync(rep_1B + fileName)) {
         member.addRole(role_1B);
-        if (fs.existsSync(rivUsersRep + fileName)) fs.unlinkSync(rivUsersRep + fileName);
+        if (fs.existsSync(door1UsersRep + fileName)) fs.unlinkSync(door1UsersRep + fileName);
   	  }
   	  member.removeRole(role_1A);
 
     } else if (msgChan == chan_1B) {
-      if (fs.existsSync(rivUsersRep + fileName)) {
-  	    member.addRole(rivRole);
+      if (fs.existsSync(door1UsersRep + fileName)) {
+  	    member.addRole(door1Role);
   	    if (fs.existsSync(rep_1A + fileName)) fs.unlinkSync(rep_1A + fileName);
   	} else if (fs.existsSync(rep_1A + fileName)) {
       member.addRole(role_1A);
-      if (fs.existsSync(rivUsersRep + fileName)) fs.unlinkSync(rivUsersRep + fileName);
+      if (fs.existsSync(door1UsersRep + fileName)) fs.unlinkSync(door1UsersRep + fileName);
   	} else if (fs.existsSync(rep_1D + fileName)) {
-      if (fs.existsSync(rivUsersRep + fileName)) fs.unlinkSync(rivUsersRep + fileName);
+      if (fs.existsSync(door1UsersRep + fileName)) fs.unlinkSync(door1UsersRep + fileName);
       if (fs.existsSync(rep_1A + fileName)) fs.unlinkSync(rep_1A + fileName);
       member.addRole(role_1D);
   	}
@@ -123,48 +123,48 @@ function comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs
   	member.removeRole(role_1F);
 
   } else if (msgChan == chan_2A) {
-    if (fs.existsSync(ortUsersRep + fileName)) {
-  	  member.addRole(ortRole);
+    if (fs.existsSync(door2UsersRep + fileName)) {
+  	  member.addRole(door2Role);
       if (fs.existsSync(rep_1F + fileName)) fs.unlinkSync(rep_1F + fileName);
       if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
       if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
   	} else if (fs.existsSync(rep_2B + fileName)) {
       member.addRole(role_2B);
-      if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+      if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_1F + fileName)) fs.unlinkSync(rep_1F + fileName);
       if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
   	} else if (fs.existsSync(rep_2C + fileName)) {
       member.addRole(role_2C);
-      if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+      if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_1F + fileName)) fs.unlinkSync(rep_1F + fileName);
       if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
   	} else if (fs.existsSync(rep_1F + fileName)) {
       member.addRole(role_1F);
-      if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+      if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
       if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
   	}
   	member.removeRole(role_2A);
 
   } else if (msgChan == chan_2B) {
-  	if (fs.existsSync(ortUsersRep + fileName)) {
-  	  member.addRole(ortRole);
+  	if (fs.existsSync(door2UsersRep + fileName)) {
+  	  member.addRole(door2Role);
       if (fs.existsSync(rep_2A + fileName)) fs.unlinkSync(rep_2A + fileName);
       if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
       if (fs.existsSync(rep_2D + fileName)) fs.unlinkSync(rep_2D + fileName);
   	} else if (fs.existsSync(rep_2A + fileName)) {
       member.addRole(role_2A);
-      if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+      if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
       if (fs.existsSync(rep_2D + fileName)) fs.unlinkSync(rep_2D + fileName);
   	} else if (fs.existsSync(rep_2C + fileName)) {
       member.addRole(role_2C);
-      if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+      if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_2A + fileName)) fs.unlinkSync(rep_2A + fileName);
       if (fs.existsSync(rep_2D + fileName)) fs.unlinkSync(rep_2D + fileName);
   	} else if (fs.existsSync(rep_2D + fileName)) {
       member.addRole(role_2D);
-      if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+      if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_2A + fileName)) fs.unlinkSync(rep_2A + fileName);
       if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
   	}
@@ -231,7 +231,9 @@ function comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs
       member.addRole(role_3H);
       if (fs.existsSync(rep_2D + fileName)) fs.unlinkSync(rep_2D + fileName);
       if (fs.existsSync(rep_2F + fileName)) fs.unlinkSync(rep_2F + fileName);
-  	}
+  	} else if (!fs.existsSync(rep_2D + fileName) && !fs.existsSync(rep_2F + fileName) && !fs.existsSync(rep_3H + fileName)) {
+      message.channel.send(`**${member.user.username}** vous avez été téléporté.\nLe téléporteur est à sens unique, il ne peut vous ramener à votre précédent emplacement.\nSi vous ne savez pas quoi faire, je vous invite à taper: **\`!choix\`**`)
+    }
   	member.removeRole(role_2E);
 
   } else if (msgChan == chan_2F) {
@@ -257,34 +259,34 @@ function comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs
   	member.removeRole(role_2H);
 
   } else if (msgChan == chan_3A) {
-    if (fs.existsSync(brouUsersRep + fileName)) {
-      member.addRole(brouRole);
+    if (fs.existsSync(door3UsersRep + fileName)) {
+      member.addRole(door3Role);
       if (fs.existsSync(rep_3B + fileName)) fs.unlinkSync(rep_3B + fileName);
   	} else if (fs.existsSync(rep_3B + fileName)) {
       member.addRole(role_3B);
-      if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
+      if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
   	}
   	member.removeRole(role_3A);
 
   } else if (msgChan == chan_3B) {
-  	if (fs.existsSync(brouUsersRep + fileName)) {
-  	  member.addRole(brouRole);
+  	if (fs.existsSync(door3UsersRep + fileName)) {
+  	  member.addRole(door3Role);
       if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
       if (fs.existsSync(rep_3C + fileName)) fs.unlinkSync(rep_3C + fileName);
       if (fs.existsSync(rep_3D + fileName)) fs.unlinkSync(rep_3D + fileName);
   	} else if (fs.existsSync(rep_3A + fileName)) {
       member.addRole(role_3A);
-      if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
+      if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
       if (fs.existsSync(rep_3C + fileName)) fs.unlinkSync(rep_3C + fileName);
       if (fs.existsSync(rep_3D + fileName)) fs.unlinkSync(rep_3D + fileName);
   	} else if (fs.existsSync(rep_3C + fileName)) {
       member.addRole(role_3C);
-      if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
+      if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
       if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
       if (fs.existsSync(rep_3D + fileName)) fs.unlinkSync(rep_3D + fileName);
   	} else if (fs.existsSync(rep_3D + fileName)) {
       member.addRole(role_3D);
-      if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
+      if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
       if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
       if (fs.existsSync(rep_3C + fileName)) fs.unlinkSync(rep_3C + fileName);
   	}
@@ -393,8 +395,8 @@ function comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs
   	member.removeRole(role_3J);
 
   } else if (msgChan == chan_4A) {
-  	if (fs.existsSync(jarUsersRep + fileName)) {
-  	  member.addRole(jarRole);
+  	if (fs.existsSync(door4UsersRep + fileName)) {
+  	  member.addRole(door4Role);
       if (fs.existsSync(rep_4B + fileName)) fs.unlinkSync(rep_4B + fileName);
   	} else if (fs.existsSync(rep_4B + fileName)) {
       member.addRole(role_4B);
@@ -403,24 +405,24 @@ function comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs
   	member.removeRole(role_4A);
 
   } else if (msgChan == chan_4B) {
-    if (fs.existsSync(jarUsersRep + fileName)) {
-  	  member.addRole(jarRole);
+    if (fs.existsSync(door4UsersRep + fileName)) {
+  	  member.addRole(door4Role);
       if (fs.existsSync(rep_4A + fileName)) fs.unlinkSync(rep_4A + fileName);
       if (fs.existsSync(rep_4C + fileName)) fs.unlinkSync(rep_4C + fileName);
       if (fs.existsSync(rep_4D + fileName)) fs.unlinkSync(rep_4D + fileName);
   	} else if (fs.existsSync(rep_4A + fileName)) {
       member.addRole(role_4A);
-      if (fs.existsSync(jarUsersRep + fileName)) fs.unlinkSync(jarUsersRep + fileName);
+      if (fs.existsSync(door4UsersRep + fileName)) fs.unlinkSync(door4UsersRep + fileName);
       if (fs.existsSync(rep_4C + fileName)) fs.unlinkSync(rep_4C + fileName);
       if (fs.existsSync(rep_4D + fileName)) fs.unlinkSync(rep_4D + fileName);
   	} else if (fs.existsSync(rep_4C + fileName)) {
       member.addRole(role_4C);
-      if (fs.existsSync(jarUsersRep + fileName)) fs.unlinkSync(jarUsersRep + fileName);
+      if (fs.existsSync(door4UsersRep + fileName)) fs.unlinkSync(door4UsersRep + fileName);
       if (fs.existsSync(rep_4A + fileName)) fs.unlinkSync(rep_4A + fileName);
       if (fs.existsSync(rep_4D + fileName)) fs.unlinkSync(rep_4D + fileName);
   	} else if (fs.existsSync(rep_4D + fileName)) {
       member.addRole(role_4D);
-      if (fs.existsSync(jarUsersRep + fileName)) fs.unlinkSync(jarUsersRep + fileName);
+      if (fs.existsSync(door4UsersRep + fileName)) fs.unlinkSync(door4UsersRep + fileName);
       if (fs.existsSync(rep_4A + fileName)) fs.unlinkSync(rep_4A + fileName);
       if (fs.existsSync(rep_4C + fileName)) fs.unlinkSync(rep_4C + fileName);
   	}
@@ -527,6 +529,7 @@ function comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs
   	member.removeRole(role_4I);
 
   }
+  message.delete(300)
   
   } // END OF USERS COME BACK CMD
 

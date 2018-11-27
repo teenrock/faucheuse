@@ -60,312 +60,290 @@ Si vous êtes de la partie, et lorsque vous y serez prêt,\nje vous invite à ta
 
 // START / RESTART & HELP USERS COMMANDS
 client.on("message", (message, channel) => {
-  if ((message == null)||(message == undefined)) return;
-  if (message.content.startsWith(prefix)) message.delete(750)
   var member = message.guild.member(message.author);
-  var rivMsg = `**\`!choix 1A\`** ou **\`!choix 1B\`**`;
-  /*`**${member}** voilà que vous avancez tranquillement en suivant le bord de la rivière.\nUn choix s'offre à vous...\nSur votre droite vous appercevez un pont en direction du quel semblent provenir un bruit de foule...\
-Néanmoins, il ne semble pas très solide :confused:\n
-Préférez-vous:\n\u0031\u20E3 - Prendre le risque de traverser le pont ?\ntapez: **\`!traverser le pont\`**\n\u0032\u20E3 - Continuer votre route et traverser plus tard ?\ntapez: **\`!continuer ma route\`**`;
-*/
-  var ortMsg = `**\`!choix 2A\`** ou **\`!choix 2B\`**`;
-  /*`**${member}** les orties vous piquent les jambes !\nCela commence à vous agacer...\n\nVous avez le choix, préférez-vous:
-\u0031\u20E3 - Continuer à travers le champs d'orties ? (ca démange un peu mais vous êtes un warrior après tout !)\ntapez: **\`!traverser le champs d'orties\`**
-\u0032\u20E3 - Couper à travers champs et mettre un terme à cette torture ?\ntapez: **\`!couper à travers champs\`**`;
-*/
-  var brouMsg = `**\`!choix 3A\`** ou **\`!choix 3B\`**`;
-  /*`**${member}** pas facile d'avancer quand on y voit rien à ce point... :confused:\nLe brouillard semble s'estomper un peu plus loin, vous pouvez:\n
-\u0031\u20E3 - Continuer pour sortir du brouillard\ntapez: **\`!sortir du brouillard\`**\n\u0032\u20E3 - Continuer dans le brouillard ?\ntapez: **\`!continuer dans le brouillard\`**`;
-*/
-  var jarMsg = `**\`!choix 4A\`** ou **\`!choix 4B\`**`;
-  /*`**${member}** vous avez maintenant parcouru(e) quelques kilomètres, la vue est agréable mais ne vous laissez pas endormir par le paysage !\nUn peu plus loin sur votre droite vous semblez percevoir un santier mais...`
-*/;
-  cmd = message.content.slice(1);
-  if ((message.author.bot)||(isReady == false)) return;
-  if (message.content.startsWith(prefix + 'start') && (message.channel != enterChan) && ((message != null)||(message != undefined))) return message.delete()
+  var msgChan = message.channel;
+  var cmd = message.content.slice(1);
+  var fileName = member.id + '.js';
+
+  if ((message.author.bot)||(isReady == false)||(message == null)||(message == undefined)) return;
 
   // USERS START CMD	
-  if ((message.channel == enterChan) && message.content.startsWith(prefix + 'start')) {
+  if ((message.channel == enterChan) && (cmd == 'start')) { // START USERS CMD
     const startCmd = require("./startCmd.js")
     startCmd(message, client, member, fs)
 
   // RESTART CMD
-  } else if (message.content.startsWith(prefix + 'restart')) {
-  	const restartCmd = require("./restartCmd.js")
-  	restartCmd(message, client, member, fs)
+  } else if (cmd == "restart") { // RESTART USERS CMD
+    const restartCmd = require("./restartCmd.js")
+    if (!fs.existsSync(winUsersRep + member.id + '.js')) {
+      restartCmd(message, client, member, fs)
+    } else {
+      member.user.send(`**${member.user.username}** vous avez tapé la commande restart alors que vous êtes arrivé au bout du labyrinthe.\nAfin de confirmer que ce choix n'a pas été effectué par inadvertance `) // A COMPLETER
+    }
+  	message.delete(300)
 
-  } else if (message.content == "!choix") { // DONNE LES DIFFERENTS CHOIX POSSIBLES EN FONCTION DU SALON OU L'UTILISATEUR SE TROUVE
+  } else if (cmd == "choix") { // DONNE LES DIFFERENTS CHOIX POSSIBLES EN FONCTION DU SALON OU L'UTILISATEUR SE TROUVE
     const choixCmd = require("./choixCmd.js")
     choixCmd(message, member)
 
+  } else if ((cmd == "faire demi-tour") || (cmd == "faire demi tour")) { // COME BACK USERS CMD
+    const comebackCmd = require('./comebackCmd.js')
+    comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs)
+  }
+  
+
+    if (msgChan == chanDoor1) {
+
+    if (!fs.existsSync(rep_1A + fileName) && !fs.existsSync(rep_1B + fileName)) { // Premier choix dans le labyrinthe
+      if (cmd == choice_1A) {
+        member.addRole(role_1A.id).then(addRole => {
+          fs.createFileSync(rep_1A + fileName)
+          setTimeout(function() {
+            chan_1A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
+            if (member.roles.has(door1Role.id)) member.removeRole(door1Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_1B) {
+        member.addRole(role_1B.id).then(addRole => {
+          fs.createFileSync(rep_1B + fileName)
+          setTimeout(function() {
+            if (member.roles.has(door1Role.id)) member.removeRole(door1Role.id)
+          }, 1 * 1500)
+        })
+      }
+
+    } else if (fs.existsSync(rep_1A + fileName)) { // l'utilisateur vient du salon 1A
+      if (cmd == choice_1A) {
+        member.addRole(role_1A.id).then(addRole => {
+          fs.createFileSync(door1UsersRep + fileName)
+          if (fs.existsSync(rep_1B + fileName)) fs.unlinkSync(rep_1B + fileName);
+          setTimeout(function() {
+            chan_1A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
+            if (member.roles.has(door1Role.id)) member.removeRole(door1Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_1B) {
+        member.addRole(role_1B.id).then(addRole => {
+          fs.createFileSync(rep_1B + fileName)
+          if (fs.existsSync(rep_1A + fileName)) fs.unlinkSync(rep_1A + fileName);
+          setTimeout(function() {
+            if (member.roles.has(door1Role.id)) member.removeRole(door1Role.id)
+          }, 1 * 1500)
+        })
+      }
+
+    } else if (fs.existsSync(rep_1B + fileName)) { // l'utilisateur vient du salon 1B
+      if (cmd == choice_1A) {
+        member.addRole(role_1A.id).then(addRole => {
+          fs.createFileSync(rep_1A + fileName)
+          if (fs.existsSync(rep_1B + fileName)) fs.unlinkSync(rep_1B + fileName);
+          setTimeout(function() {
+            chan_1A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
+            if (member.roles.has(door1Role.id)) member.removeRole(door1Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_1B) {
+        member.addRole(role_1B.id).then(addRole => {
+          fs.createFileSync(rep_1B + fileName)
+          if (fs.existsSync(rep_1A + fileName)) fs.unlinkSync(rep_1A + fileName);
+          setTimeout(function() {
+            if (member.roles.has(door1Role.id)) member.removeRole(door1Role.id)
+          }, 1 * 1500)
+        })
+      }
+
+    }
+    
+  } else if (msgChan == chanDoor2) {
+
+    if (!fs.existsSync(rep_2A + fileName) && !fs.existsSync(rep_2B + fileName)) { // Premier choix dans le labyrinthe
+      if (cmd == choice_2A) {
+        member.addRole(role_2A.id).then(addRole => {
+          fs.createFileSync(rep_2A + fileName)
+          setTimeout(function() {
+            if (member.roles.has(door2Role.id)) member.removeRole(door2Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_2B) {
+        member.addRole(role_2B.id).then(addRole => {
+          fs.createFileSync(rep_2B + fileName)
+          setTimeout(function() {
+            if (member.roles.has(door2Role.id)) member.removeRole(door2Role.id)
+          }, 1 * 1500)
+        })
+      }
+      
+
+    } else if (fs.existsSync(rep_2A + fileName)) {
+      if (cmd == choice_2A) {
+        member.addRole(role_2A.id).then(addRole => {
+          fs.createFileSync(door2UsersRep + fileName)
+          if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
+          setTimeout(function() {
+            if (member.roles.has(door2Role.id)) member.removeRole(door2Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_2B) {
+        member.addRole(role_2B.id).then(addRole => {
+          fs.createFileSync(rep_2B + fileName)
+          if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
+          setTimeout(function() {
+            if (member.roles.has(door2Role.id)) member.removeRole(door2Role.id)
+          }, 1 * 1500)
+        })
+      }
+
+    } else if (fs.existsSync(rep_2B + fileName)) {
+      if (cmd == choice_2A) {
+        member.addRole(role_2A.id).then(addRole => {
+          fs.createFileSync(rep_2A + fileName)
+          if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
+          setTimeout(function() {
+            if (member.roles.has(door2Role.id)) member.removeRole(door2Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_2B) {
+        member.addRole(role_2B.id).then(addRole => {
+          fs.createFileSync(rep_2B + fileName)
+          if (fs.existsSync(rep_2A + fileName)) fs.unlinkSync(rep_2A + fileName);
+          setTimeout(function() {
+            if (member.roles.has(door2Role.id)) member.removeRole(door2Role.id)
+          }, 1 * 1500)
+        })
+      }
+
+    }
+    
+  } else if (msgChan == chanDoor3) {
+
+    if (!fs.existsSync(rep_3A + fileName) && !fs.existsSync(rep_3B + fileName)) { // Premier choix dans le labyrinthe
+      if (cmd == choice_3A) {
+        member.addRole(role_3A.id).then(addRole => {
+          fs.createFileSync(rep_3A + fileName)
+          setTimeout(function() {
+            chan_3A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
+            if (member.roles.has(door3Role.id)) member.removeRole(door3Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_3B) {
+        member.addRole(role_3B.id).then(addRole => {
+          fs.createFileSync(rep_3B + fileName)
+          setTimeout(function() {
+            if (member.roles.has(door3Role.id)) member.removeRole(door3Role.id)
+          }, 1 * 1500)
+        })
+      }
+      if (member.roles.has(door1Role.id)) member.removeRole(door1Role.id)
+
+    } else if (fs.existsSync(rep_3A + fileName)) { // l'utilisateur vient du salon 3A
+      if (cmd == choice_3A) {
+        member.addRole(role_3A.id).then(addRole => {
+          fs.createFileSync(door3UsersRep + fileName)
+          if (fs.existsSync(rep_3B + fileName)) fs.unlinkSync(rep_3B + fileName);
+          setTimeout(function() {
+            chan_3A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
+            if (member.roles.has(door3Role.id)) member.removeRole(door3Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_3B) {
+        member.addRole(role_3B.id).then(addRole => {
+          fs.createFileSync(rep_3B + fileName)
+          if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
+          setTimeout(function() {
+            if (member.roles.has(door3Role.id)) member.removeRole(door3Role.id)
+          }, 1 * 1500)
+        })
+      }
+
+    } else if (fs.existsSync(rep_3B + fileName)) { // l'utilisateur vient du salon 3B
+      if (cmd == choice_3A) {
+        member.addRole(role_3A.id).then(addRole => {
+          fs.createFileSync(rep_3A + fileName)
+          if (fs.existsSync(rep_3B + fileName)) fs.unlinkSync(rep_3B + fileName);
+          setTimeout(function() {
+            chan_3A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
+            if (member.roles.has(door3Role.id)) member.removeRole(door3Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_3B) {
+        member.addRole(role_3B.id).then(addRole => {
+          fs.createFileSync(rep_3B + fileName)
+          if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
+          setTimeout(function() {
+            if (member.roles.has(door3Role.id)) member.removeRole(door3Role.id)
+          }, 1 * 1500)
+        })
+      }
+
+    }
+    
+  } else if (msgChan == chanDoor4) {
+
+    if (!fs.existsSync(rep_4A + fileName) && !fs.existsSync(rep_4B + fileName)) { // Premier choix dans le labyrinthe
+      if (cmd == choice_4A) {
+        member.addRole(role_4A.id).then(addRole => {
+          fs.createFileSync(rep_4A + fileName)
+          setTimeout(function() {
+            chan_4A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
+            if (member.roles.has(door4Role.id)) member.removeRole(door4Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_4B) {
+        member.addRole(role_4B.id).then(addRole => {
+          fs.createFileSync(rep_4B + fileName)
+          setTimeout(function() {
+            if (member.roles.has(door4Role.id)) member.removeRole(door4Role.id)
+          }, 1 * 1500)
+        })
+      }
+
+    } else if (fs.existsSync(rep_4A + fileName)) { // l'utilisateur vient du salon 4A
+      if (cmd == choice_4A) {
+        member.addRole(role_4A.id).then(addRole => {
+          fs.createFileSync(rep_4A + fileName)
+          if (fs.existsSync(rep_4B + fileName)) fs.unlinkSync(rep_4B + fileName);
+          setTimeout(function() {
+            chan_4A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
+            if (member.roles.has(door4Role.id)) member.removeRole(door4Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_4B) {
+        member.addRole(role_4B.id).then(addRole => {
+          fs.createFileSync(rep_4B + fileName)
+          if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
+          setTimeout(function() {
+            if (member.roles.has(door4Role.id)) member.removeRole(door4Role.id)
+          }, 1 * 1500)
+        })
+      }
+
+    } else if (fs.existsSync(rep_4B + fileName)) { // l'utilisateur vient du salon 4B
+      if (cmd == choice_4A) {
+        member.addRole(role_4A.id).then(addRole => {
+          fs.createFileSync(rep_4A + fileName)
+          if (fs.existsSync(rep_4B + fileName)) fs.unlinkSync(rep_4B + fileName);
+          setTimeout(function() {
+            chan_4A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
+            if (member.roles.has(door4Role.id)) member.removeRole(door4Role.id)
+          }, 1 * 1500)
+        })
+      } else if (cmd == choice_4B) {
+        member.addRole(role_4B.id).then(addRole => {
+          fs.createFileSync(rep_4B + fileName)
+          if (fs.existsSync(rep_4A + fileName)) fs.unlinkSync(rep_4A + fileName);
+          setTimeout(function() {
+            if (member.roles.has(door4Role.id)) member.removeRole(door4Role.id)
+          }, 1 * 1500)
+        })
+      }
+
+    }
+    
   }
   
 });
 
 
-// USERS COME BACK CMD
-client.on("message", (message, prefix, client) => {
-  var member = message.guild.member(message.author);
-  var msgChan = message.channel;
-  var cmd = message.content;
-  var fileName = member.id + '.js';
-
-  if (message.author.bot) return;
-
-  // USERS COME BACK CMD
-  const comebackCmd = require('./comebackCmd.js')
-  comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs)
-
-  if (msgChan == rivChan) {
-
-  	if (!fs.existsSync(rep_1A + fileName) && !fs.existsSync(rep_1B + fileName)) { // Premier choix dans le labyrinthe
-  	  if (cmd == choice_1A) {
-  	  	member.addRole(role_1A.id).then(addRole => {
-  	  	  fs.createFileSync(rep_1A + fileName)
-  	  	  setTimeout(function() {
-  	  	  	chan_1A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
-  	  	  	if (member.roles.has(rivRole.id)) member.removeRole(rivRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_1B) {
-  	  	member.addRole(role_1B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_1B + fileName)
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(rivRole.id)) member.removeRole(rivRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-
-  	} else if (fs.existsSync(rep_1A + fileName)) { // l'utilisateur vient du salon 1A
-  	  if (cmd == choice_1A) {
-  	  	member.addRole(role_1A.id).then(addRole => {
-  	  	  fs.createFileSync(rivUsersRep + fileName)
-  	  	  if (fs.existsSync(rep_1B + fileName)) fs.unlinkSync(rep_1B + fileName);
-  	  	  setTimeout(function() {
-  	  	  	chan_1A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
-  	  	  	if (member.roles.has(rivRole.id)) member.removeRole(rivRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_1B) {
-  	  	member.addRole(role_1B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_1B + fileName)
-  	  	  if (fs.existsSync(rep_1A + fileName)) fs.unlinkSync(rep_1A + fileName);
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(rivRole.id)) member.removeRole(rivRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-
-  	} else if (fs.existsSync(rep_1B + fileName)) { // l'utilisateur vient du salon 1B
-  	  if (cmd == choice_1A) {
-  	  	member.addRole(role_1A.id).then(addRole => {
-  	  	  fs.createFileSync(rep_1A + fileName)
-  	  	  if (fs.existsSync(rep_1B + fileName)) fs.unlinkSync(rep_1B + fileName);
-  	  	  setTimeout(function() {
-  	  	  	chan_1A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
-  	  	  	if (member.roles.has(rivRole.id)) member.removeRole(rivRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_1B) {
-  	  	member.addRole(role_1B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_1B + fileName)
-  	  	  if (fs.existsSync(rep_1A + fileName)) fs.unlinkSync(rep_1A + fileName);
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(rivRole.id)) member.removeRole(rivRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-
-  	}
-  	
-  } else if (msgChan == ortChan) {
-
-  	if (!fs.existsSync(rep_2A + fileName) && !fs.existsSync(rep_2B + fileName)) { // Premier choix dans le labyrinthe
-  	  if (cmd == choice_2A) {
-  	  	member.addRole(role_2A.id).then(addRole => {
-  	  	  fs.createFileSync(rep_2A + fileName)
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(ortRole.id)) member.removeRole(ortRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_2B) {
-  	  	member.addRole(role_2B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_2B + fileName)
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(ortRole.id)) member.removeRole(ortRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-  	  
-
-  	} else if (fs.existsSync(rep_2A + fileName)) {
-  	  if (cmd == choice_2A) {
-  	  	member.addRole(role_2A.id).then(addRole => {
-  	  	  fs.createFileSync(ortUsersRep + fileName)
-  	  	  if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(ortRole.id)) member.removeRole(ortRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_2B) {
-  	  	member.addRole(role_2B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_2B + fileName)
-  	  	  if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(ortRole.id)) member.removeRole(ortRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-
-  	} else if (fs.existsSync(rep_2B + fileName)) {
-  	  if (cmd == choice_2A) {
-  	  	member.addRole(role_2A.id).then(addRole => {
-  	  	  fs.createFileSync(rep_2A + fileName)
-  	  	  if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(ortRole.id)) member.removeRole(ortRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_2B) {
-  	  	member.addRole(role_2B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_2B + fileName)
-  	  	  if (fs.existsSync(rep_2A + fileName)) fs.unlinkSync(rep_2A + fileName);
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(ortRole.id)) member.removeRole(ortRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-
-  	}
-  	
-  } else if (msgChan == brouChan) {
-
-  	if (!fs.existsSync(rep_3A + fileName) && !fs.existsSync(rep_3B + fileName)) { // Premier choix dans le labyrinthe
-  	  if (cmd == choice_3A) {
-  	  	member.addRole(role_3A.id).then(addRole => {
-  	  	  fs.createFileSync(rep_3A + fileName)
-  	  	  setTimeout(function() {
-  	  	  	chan_3A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
-  	  	  	if (member.roles.has(brouRole.id)) member.removeRole(brouRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_3B) {
-  	  	member.addRole(role_3B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_3B + fileName)
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(brouRole.id)) member.removeRole(brouRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-  	  if (member.roles.has(rivRole.id)) member.removeRole(rivRole.id)
-
-  	} else if (fs.existsSync(rep_3A + fileName)) { // l'utilisateur vient du salon 3A
-  	  if (cmd == choice_3A) {
-  	  	member.addRole(role_3A.id).then(addRole => {
-  	  	  fs.createFileSync(brouUsersRep + fileName)
-  	  	  if (fs.existsSync(rep_3B + fileName)) fs.unlinkSync(rep_3B + fileName);
-  	  	  setTimeout(function() {
-  	  	  	chan_3A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
-  	  	  	if (member.roles.has(brouRole.id)) member.removeRole(brouRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_3B) {
-  	  	member.addRole(role_3B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_3B + fileName)
-  	  	  if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(brouRole.id)) member.removeRole(brouRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-
-  	} else if (fs.existsSync(rep_3B + fileName)) { // l'utilisateur vient du salon 3B
-  	  if (cmd == choice_3A) {
-  	  	member.addRole(role_3A.id).then(addRole => {
-  	  	  fs.createFileSync(rep_3A + fileName)
-  	  	  if (fs.existsSync(rep_3B + fileName)) fs.unlinkSync(rep_3B + fileName);
-  	  	  setTimeout(function() {
-  	  	  	chan_3A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
-  	  	  	if (member.roles.has(brouRole.id)) member.removeRole(brouRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_3B) {
-  	  	member.addRole(role_3B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_3B + fileName)
-  	  	  if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(brouRole.id)) member.removeRole(brouRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-
-  	}
-  	
-  } else if (msgChan == jarChan) {
-
-  	if (!fs.existsSync(rep_4A + fileName) && !fs.existsSync(rep_4B + fileName)) { // Premier choix dans le labyrinthe
-  	  if (cmd == choice_4A) {
-  	  	member.addRole(role_4A.id).then(addRole => {
-  	  	  fs.createFileSync(rep_4A + fileName)
-  	  	  setTimeout(function() {
-  	  	  	chan_4A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
-  	  	  	if (member.roles.has(jarRole.id)) member.removeRole(jarRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_4B) {
-  	  	member.addRole(role_4B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_4B + fileName)
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(jarRole.id)) member.removeRole(jarRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-
-  	} else if (fs.existsSync(rep_4A + fileName)) { // l'utilisateur vient du salon 4A
-  	  if (cmd == choice_4A) {
-  	  	member.addRole(role_4A.id).then(addRole => {
-  	  	  fs.createFileSync(rep_4A + fileName)
-  	  	  if (fs.existsSync(rep_4B + fileName)) fs.unlinkSync(rep_4B + fileName);
-  	  	  setTimeout(function() {
-  	  	  	chan_4A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
-  	  	  	if (member.roles.has(jarRole.id)) member.removeRole(jarRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_4B) {
-  	  	member.addRole(role_4B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_4B + fileName)
-  	  	  if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(jarRole.id)) member.removeRole(jarRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-
-  	} else if (fs.existsSync(rep_4B + fileName)) { // l'utilisateur vient du salon 4B
-  	  if (cmd == choice_4A) {
-  	  	member.addRole(role_4A.id).then(addRole => {
-  	  	  fs.createFileSync(rep_4A + fileName)
-  	  	  if (fs.existsSync(rep_4B + fileName)) fs.unlinkSync(rep_4B + fileName);
-  	  	  setTimeout(function() {
-  	  	  	chan_4A.send(`cul de sac... faire demi tour`).then(ans => ans.delete(5000))
-  	  	  	if (member.roles.has(jarRole.id)) member.removeRole(jarRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  } else if (cmd == choice_4B) {
-  	  	member.addRole(role_4B.id).then(addRole => {
-  	  	  fs.createFileSync(rep_4B + fileName)
-  	  	  if (fs.existsSync(rep_4A + fileName)) fs.unlinkSync(rep_4A + fileName);
-  	  	  setTimeout(function() {
-  	  	  	if (member.roles.has(jarRole.id)) member.removeRole(jarRole.id)
-  	  	  }, 1 * 1500)
-  	  	})
-  	  }
-
-  	}
-  	
-  }
-
-});
 
 // LABYRINTHE PART 1
 client.on("message", (message) => {
@@ -378,25 +356,25 @@ client.on("message", (message) => {
   	if (cmd == choice_1C) { // PIEGE ICI
   	  member.addRole(role_1C.id).then(addRole => {
   	  	fs.createFileSync(rep_1C + fileName)
-  	  	if (fs.existsSync(rivUsersRep + fileName)) fs.unlinkSync(rivUsersRep + fileName);
+  	  	if (fs.existsSync(door1UsersRep + fileName)) fs.unlinkSync(door1UsersRep + fileName);
   	  	if (fs.existsSync(rep_1A + fileName)) fs.unlinkSync(rep_1A + fileName);
   	  	if (fs.existsSync(rep_1D + fileName)) fs.unlinkSync(rep_1D + fileName);
   	  })
   	} else if (cmd == choice_1D) {
   	  member.addRole(role_1D.id).then(addRole => {
   	  	fs.createFileSync(rep_1D + fileName)
-  	  	if (fs.existsSync(rivUsersRep + fileName)) fs.unlinkSync(rivUsersRep + fileName);
+  	  	if (fs.existsSync(door1UsersRep + fileName)) fs.unlinkSync(door1UsersRep + fileName);
   	  	if (fs.existsSync(rep_1A + fileName)) fs.unlinkSync(rep_1A + fileName);
   	  })
   	} else if (cmd == choice_1A) {
   	  member.addRole(role_1A.id).then(addRole => {
   	  	fs.createFileSync(rep_1A + fileName)
-  	  	if (fs.existsSync(rivUsersRep + fileName)) fs.unlinkSync(rivUsersRep + fileName);
+  	  	if (fs.existsSync(door1UsersRep + fileName)) fs.unlinkSync(door1UsersRep + fileName);
   	  	if (fs.existsSync(rep_1D + fileName)) fs.unlinkSync(rep_1D + fileName);
   	  })
   	} else if (cmd == choice_1) {
-  	  member.addRole(rivRole.id).then(addRole => {
-  	  	fs.createFileSync(rivUsersRep + fileName)
+  	  member.addRole(door1Role.id).then(addRole => {
+  	  	fs.createFileSync(door1UsersRep + fileName)
   	    if (fs.existsSync(rep_1A + fileName)) fs.unlinkSync(rep_1A + fileName);
   	  	if (fs.existsSync(rep_1D + fileName)) fs.unlinkSync(rep_1D + fileName);
   	  })
@@ -479,25 +457,25 @@ client.on("message", (message) => {
 
   	if (cmd == choice_1F) member.addRole(role_1F).then(addRole => {
   	  fs.createFileSync(rep_1F + fileName)
-  	  if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+  	  if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
       if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
   	})
   	if (cmd == choice_2C) member.addRole(role_2C).then(addRole => {
   	  fs.createFileSync(rep_2C + fileName)
-  	  if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+  	  if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
       if (fs.existsSync(rep_1F + fileName)) fs.unlinkSync(rep_1F + fileName);
   	})
   	if (cmd == choice_2B) member.addRole(role_2B).then(addRole => {
   	  fs.createFileSync(rep_2B + fileName)
-  	  if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+  	  if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
       if (fs.existsSync(rep_1F + fileName)) fs.unlinkSync(rep_1F + fileName);
   	})
   	if (cmd == choice_2) member.addRole(role_2C).then(addRole => {
   	  fs.createFileSync(rep_2C + fileName)
-  	  if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+  	  if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
       if (fs.existsSync(rep_1F + fileName)) fs.unlinkSync(rep_1F + fileName);
   	})
@@ -507,24 +485,24 @@ client.on("message", (message) => {
   if ((message.channel == chan_2B) && ((cmd == choice_2C)||(cmd == choice_2D)||(cmd == choice_2A)||(cmd == choice_2))) { // CHAN_2B
   	if (cmd == choice_2C) member.addRole(role_2C).then(addRole => {
   	  fs.createFileSync(rep_2C + fileName)
-  	  if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+  	  if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_2B + fileName)) fs.unlinkSync(rep_2B + fileName);
       if (fs.existsSync(rep_1F + fileName)) fs.unlinkSync(rep_1F + fileName);
   	})
   	if (cmd == choice_2D) member.addRole(role_2D).then(addRole => {
   	  fs.createFileSync(rep_2D + fileName)
-  	  if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+  	  if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
       if (fs.existsSync(rep_2A + fileName)) fs.unlinkSync(rep_2A + fileName);
       if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
   	})
   	if (cmd == choice_2A) member.addRole(role_2A).then(addRole => {
   	  fs.createFileSync(rep_2A + fileName)
-  	  if (fs.existsSync(ortUsersRep + fileName)) fs.unlinkSync(ortUsersRep + fileName);
+  	  if (fs.existsSync(door2UsersRep + fileName)) fs.unlinkSync(door2UsersRep + fileName);
   	  if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
       if (fs.existsSync(rep_2D + fileName)) fs.unlinkSync(rep_2D + fileName);
   	})
-  	if (cmd == choice_2) member.addRole(ortRole).then(addRole => {
-  	  fs.createFileSync(ortUsersRep + fileName)
+  	if (cmd == choice_2) member.addRole(door2Role).then(addRole => {
+  	  fs.createFileSync(door2UsersRep + fileName)
       if (fs.existsSync(rep_2A + fileName)) fs.unlinkSync(rep_2A + fileName);
       if (fs.existsSync(rep_2C + fileName)) fs.unlinkSync(rep_2C + fileName);
       if (fs.existsSync(rep_2D + fileName)) fs.unlinkSync(rep_2D + fileName);
@@ -650,24 +628,24 @@ client.on("message", (message) => {
 
   	if (cmd == choice_3C) member.addRole(role_3C).then(addRole => {
   	  fs.createFileSync(rep_3C + fileName)
-  	  if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
+  	  if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
       if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
       if (fs.existsSync(rep_3D + fileName)) fs.unlinkSync(rep_3D + fileName);
   	})
   	if (cmd == choice_3D) member.addRole(role_3D).then(addRole => {
   	  fs.createFileSync(rep_3D + fileName)
-  	  if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
+  	  if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
       if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
       if (fs.existsSync(rep_3C + fileName)) fs.unlinkSync(rep_3C + fileName);
   	})
   	if (cmd == choice_3A) member.addRole(role_3A).then(addRole => {
   	  fs.createFileSync(rep_3A + fileName)
-  	  if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
+  	  if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
       if (fs.existsSync(rep_3C + fileName)) fs.unlinkSync(rep_3C + fileName);
       if (fs.existsSync(rep_3D + fileName)) fs.unlinkSync(rep_3D + fileName);
   	})
-  	if (cmd == choice_3) member.addRole(brouRole).then(addRole => {
-  	  fs.createFileSync(brouUsersRepou + fileName)
+  	if (cmd == choice_3) member.addRole(door3Role).then(addRole => {
+  	  fs.createFileSync(door3UsersRepou + fileName)
   	  if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
       if (fs.existsSync(rep_3C + fileName)) fs.unlinkSync(rep_3C + fileName);
       if (fs.existsSync(rep_3D + fileName)) fs.unlinkSync(rep_3D + fileName);
@@ -678,23 +656,23 @@ client.on("message", (message) => {
 
   	if (cmd == choice_3E) member.addRole(role_3E).then(addRole => {
   	  fs.createFileSync(rep_3E + fileName)
-  	  if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
+  	  if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
       if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
       if (fs.existsSync(rep_3D + fileName)) fs.unlinkSync(rep_3D + fileName);
   	})
   	if (cmd == choice_3F) member.addRole(role_3F).then(addRole => {
   	  fs.createFileSync(rep_3F + fileName)
-  	  if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
+  	  if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
       if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
       if (fs.existsSync(rep_3C + fileName)) fs.unlinkSync(rep_3C + fileName);
   	})
   	if (cmd == choice_3C) member.addRole(role_3C).then(addRole => {
   	  fs.createFileSync(rep_3C + fileName)
-  	  if (fs.existsSync(brouUsersRep + fileName)) fs.unlinkSync(brouUsersRep + fileName);
+  	  if (fs.existsSync(door3UsersRep + fileName)) fs.unlinkSync(door3UsersRep + fileName);
       if (fs.existsSync(rep_3C + fileName)) fs.unlinkSync(rep_3C + fileName);
       if (fs.existsSync(rep_3D + fileName)) fs.unlinkSync(rep_3D + fileName);
   	})
-  	if (cmd == choice_3B) member.addRole(brouRole).then(addRole => {
+  	if (cmd == choice_3B) member.addRole(door3Role).then(addRole => {
   	  fs.createFileSync(rep_3B + fileName)
   	  if (fs.existsSync(rep_3A + fileName)) fs.unlinkSync(rep_3A + fileName);
       if (fs.existsSync(rep_3C + fileName)) fs.unlinkSync(rep_3C + fileName);
@@ -800,7 +778,6 @@ En vous souhaitant la bienvenue par avance, je vous souhaite une bonne installat
       })
   	})
   	
-
   } else if ((message.channel == chan_3J) && ((cmd == choice_3K)||(cmd == choice_3L)||(cmd == choice_3G)||(cmd == choice_3I))) { // CHAN_3H
 
   	if (cmd == choice_3K) member.addRole(role_3K).then(addRole => {
@@ -843,24 +820,24 @@ client.on("message", (message) => {
 
   	if (cmd == choice_4C) member.addRole(role_4C).then(addRole => {
   	  fs.createFileSync(rep_4C + fileName)
-  	  if (fs.existsSync(jarUsersRep + fileName)) fs.unlinkSync(jarUsersRep + fileName);
+  	  if (fs.existsSync(door4UsersRep + fileName)) fs.unlinkSync(door4UsersRep + fileName);
       if (fs.existsSync(rep_4A + fileName)) fs.unlinkSync(rep_4A + fileName);
       if (fs.existsSync(rep_4D + fileName)) fs.unlinkSync(rep_4D + fileName);
   	})
   	if (cmd == choice_4D) member.addRole(role_4D).then(addRole => {
   	  fs.createFileSync(rep_4D + fileName)
-  	  if (fs.existsSync(jarUsersRep + fileName)) fs.unlinkSync(jarUsersRep + fileName);
+  	  if (fs.existsSync(door4UsersRep + fileName)) fs.unlinkSync(door4UsersRep + fileName);
       if (fs.existsSync(rep_4C + fileName)) fs.unlinkSync(rep_4C + fileName);
       if (fs.existsSync(rep_4A + fileName)) fs.unlinkSync(rep_4A + fileName);
   	})
   	if (cmd == choice_4A) member.addRole(role_4A).then(addRole => {
   	  fs.createFileSync(rep_4A + fileName)
-  	  if (fs.existsSync(jarUsersRep + fileName)) fs.unlinkSync(jarUsersRep + fileName);
+  	  if (fs.existsSync(door4UsersRep + fileName)) fs.unlinkSync(door4UsersRep + fileName);
       if (fs.existsSync(rep_4C + fileName)) fs.unlinkSync(rep_4C + fileName);
       if (fs.existsSync(rep_4D + fileName)) fs.unlinkSync(rep_4D + fileName);
   	})
-    if (cmd == choice_4) member.addRole(jarRole).then(addRole => {
-  	  fs.createFileSync(jarUsersRep + fileName)
+    if (cmd == choice_4) member.addRole(door4Role).then(addRole => {
+  	  fs.createFileSync(door4UsersRep + fileName)
   	  if (fs.existsSync(rep_4A + fileName)) fs.unlinkSync(rep_4A + fileName);
       if (fs.existsSync(rep_3C + fileName)) fs.unlinkSync(rep_3C + fileName);
       if (fs.existsSync(rep_3D + fileName)) fs.unlinkSync(rep_3D + fileName);
@@ -975,6 +952,30 @@ client.on("message", (message) => {
   	})
   	if (member.roles.has(role_4G.id)) member.removeRole(role_4G.id);
 
+  } else if ((message.channel == chan_4I) && ((cmd == choice_4G)||(cmd == choice_4H))) { // CHAN_4G
+
+    if (cmd == choice_4G) member.addRole(role_4G).then(addRole => {
+      fs.createFileSync(rep_4G + fileName)
+      if (fs.existsSync(rep_4C + fileName)) fs.unlinkSync(rep_4C + fileName);
+      if (fs.existsSync(rep_4E + fileName)) fs.unlinkSync(rep_4E + fileName);
+      if (fs.existsSync(rep_4H + fileName)) fs.unlinkSync(rep_4H + fileName);
+    })
+    if (cmd == choice_4H) member.addRole(role_4H).then(addRole => {
+      fs.createFileSync(rep_4H + fileName)
+      if (fs.existsSync(rep_4C + fileName)) fs.unlinkSync(rep_4C + fileName);
+      if (fs.existsSync(rep_4E + fileName)) fs.unlinkSync(rep_4E + fileName);
+      if (fs.existsSync(rep_4G + fileName)) fs.unlinkSync(rep_4G + fileName);
+    })
+      if (cmd == "teleport") member.addRole(role_2E).then(addRole => { // TELEPORTATION VERS CHAN_2E
+      fs.createFileSync(rep_2E + fileName)
+      if (fs.existsSync(rep_4C + fileName)) fs.unlinkSync(rep_4C + fileName);
+      if (fs.existsSync(rep_4E + fileName)) fs.unlinkSync(rep_4E + fileName);
+      if (fs.existsSync(rep_4G + fileName)) fs.unlinkSync(rep_4G + fileName);
+      if (fs.existsSync(rep_4H + fileName)) fs.unlinkSync(rep_4H + fileName);
+      if (fs.existsSync(rep_4I + fileName)) fs.unlinkSync(rep_4I + fileName);
+    })
+    if (member.roles.has(role_4I.id)) member.removeRole(role_4I.id);
+
   }
 
 });
@@ -988,6 +989,9 @@ client.on("guildMemberRemove", (member) => { // l'utilisateur quitte avant d'avo
   	console.log(quitMsg + 'lancé la partie')
   } else if (fs.existsSync(userFileConf)) {
   	fs.unlinkSync(userFileConf)
+    labyUsersFoldersList.forEach(folder => {
+        if (fs.existsSync(folder + member.id + '.js')) fs.unlinkSync(folder + member.id + '.js') && console.log(` Son fichier de configuration situé dans le dossier ${folder} a été supprimé`)
+      })
   	enterChan.send(quitMsg + 'trouvé les membres communauté')
   	console.log(quitMsg + 'trouvé les membres communauté')
   }

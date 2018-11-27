@@ -6,10 +6,10 @@ function onReady(message, client, fs) {
   enterChan = bot.channels.get("513539668978040855");
   winTextChan = bot.channels.get("514562909020487710")
   // Principal Doors Channels
-  rivChan = bot.channels.get("513785111905566741");
-  ortChan = bot.channels.get("513785132835012612");
-  brouChan = bot.channels.get("513785154473558017");
-  jarChan = bot.channels.get("513785173813231628");
+  chanDoor1 = bot.channels.get("513785111905566741");
+  chanDoor2 = bot.channels.get("513785132835012612");
+  chanDoor3 = bot.channels.get("513785154473558017");
+  chanDoor4 = bot.channels.get("513785173813231628");
   // Labyrinthe Part 1
   chan_1A = bot.channels.get("513917896741617665");
   chan_1B = bot.channels.get("513918036869120021");
@@ -55,90 +55,90 @@ function onReady(message, client, fs) {
 
   // Repertories
   startedUsersRep = "./started_users/";
-  rivUsersRep = "./users_emplacement/1_riviere/"
-  ortUsersRep = "./users_emplacement/2_orties/"
-  brouUsersRep = "./users_emplacement/3_brouillard/"
-  jarUsersRep = "./users_emplacement/4_jardin/"
+  door1UsersRep = "./users_emplacement/1_eau/"
+  door2UsersRep = "./users_emplacement/2_feu/"
+  door3UsersRep = "./users_emplacement/3_air/"
+  door4UsersRep = "./users_emplacement/4_terre/"
   winUsersRep = "./winners/"
-  rep_1A = rivUsersRep + '1A/'
-  rep_1B = rivUsersRep + '1B/'
-  rep_1C = rivUsersRep + '1C/'
-  rep_1D = rivUsersRep + '1D/'
-  rep_1E = rivUsersRep + '1E/'
-  rep_1F = rivUsersRep + '1F/'
-  rep_2A = ortUsersRep + '2A/'
-  rep_2B = ortUsersRep + '2B/'
-  rep_2C = ortUsersRep + '2C/'
-  rep_2D = ortUsersRep + '2D/'
-  rep_2E = ortUsersRep + '2E/'
-  rep_2F = ortUsersRep + '2F/'
-  rep_2G = ortUsersRep + '2G/'
-  rep_2H = ortUsersRep + '2H/'
-  rep_2I = ortUsersRep + '2I/'
-  rep_3A = brouUsersRep + '3A/'
-  rep_3B = brouUsersRep + '3B/'
-  rep_3C = brouUsersRep + '3C/'
-  rep_3D = brouUsersRep + '3D/'
-  rep_3E = brouUsersRep + '3E/'
-  rep_3F = brouUsersRep + '3F/'
-  rep_3G = brouUsersRep + '3G/'
-  rep_3H = brouUsersRep + '3H/'
-  rep_3I = brouUsersRep + '3I/'
-  rep_3J = brouUsersRep + '3J/'
-  rep_3K = brouUsersRep + '3K/'
-  rep_3L = brouUsersRep + '3L/'
-  rep_4A = jarUsersRep + '4A/'
-  rep_4B = jarUsersRep + '4B/'
-  rep_4C = jarUsersRep + '4C/'
-  rep_4D = jarUsersRep + '4D/'
-  rep_4E = jarUsersRep + '4E/'
-  rep_4F = jarUsersRep + '4F/'
-  rep_4G = jarUsersRep + '4G/'
-  rep_4H = jarUsersRep + '4H/'
-  rep_4I = jarUsersRep + '4I/'
+  rep_1A = door1UsersRep + '1A/'
+  rep_1B = door1UsersRep + '1B/'
+  rep_1C = door1UsersRep + '1C/'
+  rep_1D = door1UsersRep + '1D/'
+  rep_1E = door1UsersRep + '1E/'
+  rep_1F = door1UsersRep + '1F/'
+  rep_2A = door2UsersRep + '2A/'
+  rep_2B = door2UsersRep + '2B/'
+  rep_2C = door2UsersRep + '2C/'
+  rep_2D = door2UsersRep + '2D/'
+  rep_2E = door2UsersRep + '2E/'
+  rep_2F = door2UsersRep + '2F/'
+  rep_2G = door2UsersRep + '2G/'
+  rep_2H = door2UsersRep + '2H/'
+  rep_2I = door2UsersRep + '2I/'
+  rep_3A = door3UsersRep + '3A/'
+  rep_3B = door3UsersRep + '3B/'
+  rep_3C = door3UsersRep + '3C/'
+  rep_3D = door3UsersRep + '3D/'
+  rep_3E = door3UsersRep + '3E/'
+  rep_3F = door3UsersRep + '3F/'
+  rep_3G = door3UsersRep + '3G/'
+  rep_3H = door3UsersRep + '3H/'
+  rep_3I = door3UsersRep + '3I/'
+  rep_3J = door3UsersRep + '3J/'
+  rep_3K = door3UsersRep + '3K/'
+  rep_3L = door3UsersRep + '3L/'
+  rep_4A = door4UsersRep + '4A/'
+  rep_4B = door4UsersRep + '4B/'
+  rep_4C = door4UsersRep + '4C/'
+  rep_4D = door4UsersRep + '4D/'
+  rep_4E = door4UsersRep + '4E/'
+  rep_4F = door4UsersRep + '4F/'
+  rep_4G = door4UsersRep + '4G/'
+  rep_4H = door4UsersRep + '4H/'
+  rep_4I = door4UsersRep + '4I/'
 
   // Choices
-  enterChoice = "!entrer"
-  choice_1 = "!choix riv"
-  choice_2 = "!choix ort"
-  choice_3 = "!choix brou"
-  choice_4 = "!choix jar"
-  choice_1A = "!choix 1A"
-  choice_1B = "!choix 1B"
-  choice_1C = "!choix 1C"
-  choice_1D = "!choix 1D"
-  choice_1E = "!choix 1E"
-  choice_1F = "!choix 1F"
-  choice_2A = "!choix 2A"
-  choice_2B = "!choix 2B"
-  choice_2C = "!choix 2C"
-  choice_2D = "!choix 2D"
-  choice_2E = "!choix 2E"
-  choice_2F = "!choix 2F"
-  choice_2G = "!choix 2G"
-  choice_2H = "!choix 2H"
-  choice_2I = "!choix 2I"
-  choice_3A = "!choix 3A"
-  choice_3B = "!choix 3B"
-  choice_3C = "!choix 3C"
-  choice_3D = "!choix 3D"
-  choice_3E = "!choix 3E"
-  choice_3F = "!choix 3F"
-  choice_3G = "!choix 3G"
-  choice_3H = "!choix 3H"
-  choice_3I = "!choix 3I"
-  choice_3J = "!choix 3J"
-  choice_3K = "!choix 3K"
-  choice_3L = "!choix 3L"
-  choice_4A = "!choix 4A"
-  choice_4B = "!choix 4B"
-  choice_4C = "!choix 4C"
-  choice_4D = "!choix 4D"
-  choice_4E = "!choix 4E"
-  choice_4F = "!choix 4F"
-  choice_4G = "!choix 4G"
-  choice_4H = "!choix 4H"
-  choice_4I = "!choix 4I"
+  enterChoice = "entrer"
+  choice_1 = "choix eau"
+  choice_2 = "choix feu"
+  choice_3 = "choix air"
+  choice_4 = "choix terre"
+  choice_1A = "choix 1A"
+  choice_1B = "choix 1B"
+  choice_1C = "choix 1C"
+  choice_1D = "choix 1D"
+  choice_1E = "choix 1E"
+  choice_1F = "choix 1F"
+  choice_2A = "choix 2A"
+  choice_2B = "choix 2B"
+  choice_2C = "choix 2C"
+  choice_2D = "choix 2D"
+  choice_2E = "choix 2E"
+  choice_2F = "choix 2F"
+  choice_2G = "choix 2G"
+  choice_2H = "choix 2H"
+  choice_2I = "choix 2I"
+  choice_3A = "choix 3A"
+  choice_3B = "choix 3B"
+  choice_3C = "choix 3C"
+  choice_3D = "choix 3D"
+  choice_3E = "choix 3E"
+  choice_3F = "choix 3F"
+  choice_3G = "choix 3G"
+  choice_3H = "choix 3H"
+  choice_3I = "choix 3I"
+  choice_3J = "choix 3J"
+  choice_3K = "choix 3K"
+  choice_3L = "choix 3L"
+  choice_4A = "choix 4A"
+  choice_4B = "choix 4B"
+  choice_4C = "choix 4C"
+  choice_4D = "choix 4D"
+  choice_4E = "choix 4E"
+  choice_4F = "choix 4F"
+  choice_4G = "choix 4G"
+  choice_4H = "choix 4H"
+  choice_4I = "choix 4I"
 
 
   // labyMainRolesList
@@ -154,10 +154,10 @@ function onReady(message, client, fs) {
 
     // Roles
     winRole = message.guild.roles.get("514561838227128350");
-    rivRole = message.guild.roles.get("513820486069911572");
-    ortRole = message.guild.roles.get("513820992100106269");
-    brouRole = message.guild.roles.get("513821623183212544");
-    jarRole = message.guild.roles.get("513821917615226890");
+    door1Role = message.guild.roles.get("513820486069911572");
+    door2Role = message.guild.roles.get("513820992100106269");
+    door3Role = message.guild.roles.get("513821623183212544");
+    door4Role = message.guild.roles.get("513821917615226890");
     role_1A = message.guild.roles.get("513918909569826856");
     role_1B = message.guild.roles.get("513926940361752586");
     role_1C = message.guild.roles.get("514527428593319953");
@@ -195,31 +195,32 @@ function onReady(message, client, fs) {
     role_4H = message.guild.roles.get("514558279708442625");
     role_4I = message.guild.roles.get("514558306686205975");
     
-    labyMainRolesList.push(rivRole, ortRole, brouRole, jarRole);
+    labyMainRolesList.push(door1Role, door2Role, door3Role, door4Role);
     labyRolesList.push(role_1A, role_1B, role_1C, role_1D, role_1E, role_1F, role_2A, role_2B, role_2C, role_2D, role_2E, role_2F, role_2G, role_2H, role_2I,
 role_3A, role_3B, role_3C, role_3D, role_3E, role_3F, role_3G, role_3H, role_3I, role_3J, role_3K, role_3L, role_4A, role_4B, role_4C, role_4D, role_4E, role_4F, role_4G, role_4H, role_4I);
-    labyUsersFoldersList.push(rivUsersRep, ortUsersRep, brouUsersRep, jarUsersRep, rep_1A, rep_1B, rep_1C, rep_1D, rep_1E, rep_1F, rep_2A, rep_2B, rep_2C, rep_2D, rep_2E, rep_2F, rep_2G,
+    labyUsersFoldersList.push(door1UsersRep, door2UsersRep, door3UsersRep, door4UsersRep, rep_1A, rep_1B, rep_1C, rep_1D, rep_1E, rep_1F, rep_2A, rep_2B, rep_2C, rep_2D, rep_2E, rep_2F, rep_2G,
 rep_2H, rep_2I, rep_3A, rep_3B, rep_3C, rep_3D, rep_3E, rep_3F, rep_3G, rep_3H, rep_3I, rep_3J, rep_3K, rep_3L, rep_4A, rep_4B, rep_4C, rep_4D, rep_4E, rep_4F, rep_4G, rep_4H, rep_4I);
 
     message.delete(1000)
 
 /*
+    chanDoor1.send(' ', {files:["./resources/element_eau.png"]})
+    chanDoor2.send(' ', {files:["./resources/element_feu.png"]})
+    chanDoor3.send(' ', {files:["./resources/element_air.png"]})
+    chanDoor4.send(' ', {files:["./resources/element_terre.png"]})
+
+/*
   // AutoKick Cheaters
   setInterval(function() {
-    bot.users.forEach(user => {
-    var sniped = message.guild.roles.get(user.id)
-    if (!fs.existsSync(winUsersRep + user.id + '.js') && (!user.id == '1') && (!user == bot)) {
-      sniped.kick().then(kick => console.log(user.username + ' a été kick du serveur car son identifiant n\'est pas référencé dans la liste des membres victorieux'))
+    message.guild.members.forEach(member => {
+    if (!fs.existsSync(winUsersRep + user.id + '.js') && (!member.id == '1') && (!member == bot)) {
+      member.kick().then(kick => console.log(member.user.username + ' a été kick du serveur car son identifiant n\'est pas référencé dans la liste des membres victorieux'))
     }
   })
   }, 30 * 1000)
   */
   
   })
-  
-
-
-
 
   // Others
   var memberCount = bot.users.size;
