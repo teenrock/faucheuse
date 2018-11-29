@@ -16,9 +16,9 @@ function restartCmd(message, client, member, fs) {
     }, 6 * 1000)
 
 	if (message.channel == enterChan) {
-	  message.reply(`vous souhaitez (re)commencer votre quête ?\nJe vous invite taper ici-même la commande: **\`!start\`**`).then(msg => msg.delete(5000))
+	  message.reply(`vous souhaitez (re)commencer votre quête ?\n\nJe vous invite taper ici-même la commande: **\`!start\`**`).then(msg => msg.delete(7000))
 	} else {
-	  message.reply(`vous souhaitez (re)commencer votre quête ?\nJe vous invite à retourner sur :\n**>>> ${enterChan} <<<**\net y taper la commande: **\`!start\`**`).then(msg => msg.delete(5000));
+	  message.reply(`vous souhaitez (re)commencer votre quête ?\n\nJe vous invite à retourner sur :\n\n**>>> ${enterChan} <<<**\n\nTapez-y la commande: **\`!start\`**`).then(msg => msg.delete(7000));
 	}
 
 }

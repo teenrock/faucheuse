@@ -4,6 +4,7 @@ function onReady(message, client, fs) {
 
   // Textual Channels
   enterChan = bot.channels.get("513539668978040855");
+  exitChan = bot.channels.get("516911836499542036");
   winTextChan = bot.channels.get("514562909020487710")
   // Principal Doors Channels
   chanDoor1 = bot.channels.get("513785111905566741");
@@ -99,47 +100,48 @@ function onReady(message, client, fs) {
 
   // Choices
   enterChoice = "entrer"
-  choice_1 = "choix eau"
-  choice_2 = "choix feu"
-  choice_3 = "choix air"
-  choice_4 = "choix terre"
-  choice_1A = "choix 1A"
-  choice_1B = "choix 1B"
-  choice_1C = "choix 1C"
-  choice_1D = "choix 1D"
-  choice_1E = "choix 1E"
-  choice_1F = "choix 1F"
-  choice_2A = "choix 2A"
-  choice_2B = "choix 2B"
-  choice_2C = "choix 2C"
-  choice_2D = "choix 2D"
-  choice_2E = "choix 2E"
-  choice_2F = "choix 2F"
-  choice_2G = "choix 2G"
-  choice_2H = "choix 2H"
-  choice_2I = "choix 2I"
-  choice_3A = "choix 3A"
-  choice_3B = "choix 3B"
-  choice_3C = "choix 3C"
-  choice_3D = "choix 3D"
-  choice_3E = "choix 3E"
-  choice_3F = "choix 3F"
-  choice_3G = "choix 3G"
-  choice_3H = "choix 3H"
-  choice_3I = "choix 3I"
-  choice_3J = "choix 3J"
-  choice_3K = "choix 3K"
-  choice_3L = "choix 3L"
-  choice_4A = "choix 4A"
-  choice_4B = "choix 4B"
-  choice_4C = "choix 4C"
-  choice_4D = "choix 4D"
-  choice_4E = "choix 4E"
-  choice_4F = "choix 4F"
-  choice_4G = "choix 4G"
-  choice_4H = "choix 4H"
-  choice_4I = "choix 4I"
-
+  jumpCmd = "sauter"
+  cbCmd = "faire demi-tour"||"faire demi tour"
+  choice_1 = chanDoor1.name
+  choice_2 = chanDoor2.name
+  choice_3 = chanDoor3.name
+  choice_4 = chanDoor4.name
+  choice_1A = chan_1A.name
+  choice_1B = chan_1B.name
+  choice_1C = chan_1C.name
+  choice_1D = chan_1D.name
+  choice_1E = chan_1E.name
+  choice_1F = chan_1F.name
+  choice_2A = chan_2A.name
+  choice_2B = chan_2B.name
+  choice_2C = chan_2C.name
+  choice_2D = chan_2D.name
+  choice_2E = chan_2E.name
+  choice_2F = chan_2F.name
+  choice_2G = chan_2G.name
+  choice_2H = chan_2H.name
+  choice_2I = chan_2I.name
+  choice_3A = chan_3A.name
+  choice_3B = chan_3B.name
+  choice_3C = chan_3C.name
+  choice_3D = chan_3D.name
+  choice_3E = chan_3E.name
+  choice_3F = chan_3F.name
+  choice_3G = chan_3G.name
+  choice_3H = chan_3H.name
+  choice_3I = chan_3I.name
+  choice_3J = chan_3J.name
+  choice_3K = chan_3K.name
+  choice_3L = chan_3L.name
+  choice_4A = chan_4A.name
+  choice_4B = chan_4B.name
+  choice_4C = chan_4C.name
+  choice_4D = chan_4D.name
+  choice_4E = chan_4E.name
+  choice_4F = chan_4F.name
+  choice_4G = chan_4G.name
+  choice_4H = chan_4H.name
+  choice_4I = chan_4I.name
 
   // labyMainRolesList
   labyMainRolesList = []
@@ -203,11 +205,25 @@ rep_2H, rep_2I, rep_3A, rep_3B, rep_3C, rep_3D, rep_3E, rep_3F, rep_3G, rep_3H, 
 
     message.delete(1000)
 
+});
+
 /*
-    chanDoor1.send(' ', {files:["./resources/element_eau.png"]})
-    chanDoor2.send(' ', {files:["./resources/element_feu.png"]})
-    chanDoor3.send(' ', {files:["./resources/element_air.png"]})
-    chanDoor4.send(' ', {files:["./resources/element_terre.png"]})
+  chanDoor1.createWebhook(`PORTE AQUATIQUE`, "./resources/transparent_avatar.png").then(webhook => {
+    webhook.send('**---------------------------**\n \n', {files:["./resources/element_eau.png"]}).then(wbSend => webhook.delete())
+  })
+  chanDoor2.createWebhook(`PORTE EMBRASÉE`, "./resources/transparent_avatar.png").then(webhook => {
+    webhook.send('**------------------------**\n \n ', {files:["./resources/element_feu.png"]}).then(wbSend => webhook.delete())
+  })
+  chanDoor3.createWebhook(`PORTE AÉRIENNE`, "./resources/transparent_avatar.png").then(webhook => {
+    webhook.send('**-----------------------**\n \n ', {files:["./resources/element_air.png"]}).then(wbSend => webhook.delete())
+  })
+  chanDoor4.createWebhook(`PORTE SOUTERRAINE`, "./resources/transparent_avatar.png").then(webhook => {
+    webhook.send('**-----------------------------**\n \n ', {files:["./resources/element_terre.png"]}).then(wbSend => webhook.delete())
+  })
+/*
+  enterChan.createWebhook("BIENVENUE", "./resources/transparent_avatar.png").then(webhook => {
+    webhook.send(' ', {files:["./resources/logo_server.png"]}).then(wbSend => webhook.delete())
+  });
 
 /*
   // AutoKick Cheaters
@@ -217,10 +233,8 @@ rep_2H, rep_2I, rep_3A, rep_3B, rep_3C, rep_3D, rep_3E, rep_3F, rep_3G, rep_3H, 
       member.kick().then(kick => console.log(member.user.username + ' a été kick du serveur car son identifiant n\'est pas référencé dans la liste des membres victorieux'))
     }
   })
-  }, 30 * 1000)
-  */
-  
-  })
+  }, 30 * 1000) 
+*/
 
   // Others
   var memberCount = bot.users.size;

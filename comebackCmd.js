@@ -529,8 +529,7 @@ function comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs
   	member.removeRole(role_4I);
 
   }
-  message.delete(300)
-  
+
   } // END OF USERS COME BACK CMD
 
 }

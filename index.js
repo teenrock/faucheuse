@@ -60,12 +60,39 @@ Si vous êtes de la partie, et lorsque vous y serez prêt,\nje vous invite à ta
 
 // START / RESTART & HELP USERS COMMANDS
 client.on("message", (message, channel) => {
-  var member = message.guild.member(message.author);
-  var msgChan = message.channel;
-  var cmd = message.content.slice(1);
-  var fileName = member.id + '.js';
 
   if ((message.author.bot)||(isReady == false)||(message == null)||(message == undefined)) return;
+
+  var cmd = message.content.slice(1);
+
+  if (message.content.startsWith(prefix) && (message.channel.id != "513786692964974594")) message.delete(500)
+
+  //
+  if (message.channel.id == "513786692964974594") { // Bot DMs
+
+    if ((cmd == "restart") && !fs.existsSync(winUsersRep + message.author.id + '.js')) {
+      message.channel.send(`vous souhaitez (re)commencer votre quête ?\n\nVous avez **30 secondes** pour retourner sur :\n\n**>>> ${enterChan} <<<**\n\nTapez-y la commande: **\`!restart\`**`)
+      enterChan.overwritePermissions(message.author, { SEND_MESSAGES: true })
+      setTimeout(function() {
+        enterChan.overwritePermissions(message.author, { SEND_MESSAGES: false })
+      }, 30 * 1000)
+
+    } else if ((cmd == "restart") && fs.existsSync(winUsersRep + message.author.id + '.js')) {
+      message.channel.send(`**${message.author.username}** vous avez tapé la commande restart alors que vous êtes arrivé au bout du labyrinthe.
+Vous avez **30 secondes** pour retourner sur :\n\n**>>> ${enterChan} <<<**\n\nTapez-y la commande: **\`!restart\`**`)
+      enterChan.overwritePermissions(message.author, { SEND_MESSAGES: true })
+      setTimeout(function() {
+        enterChan.overwritePermissions(message.author, { SEND_MESSAGES: false })
+      }, 30 * 1000)
+
+    }
+
+  }
+
+   if (message.channel.id == "513786692964974594") return;
+  var member = message.guild.member(message.author);
+  var msgChan = message.channel;
+  var fileName = member.id + '.js';
 
   // USERS START CMD	
   if ((message.channel == enterChan) && (cmd == 'start')) { // START USERS CMD
@@ -78,9 +105,9 @@ client.on("message", (message, channel) => {
     if (!fs.existsSync(winUsersRep + member.id + '.js')) {
       restartCmd(message, client, member, fs)
     } else {
-      member.user.send(`**${member.user.username}** vous avez tapé la commande restart alors que vous êtes arrivé au bout du labyrinthe.\nAfin de confirmer que ce choix n'a pas été effectué par inadvertance `) // A COMPLETER
+      member.user.send(`**${member.user.username}** vous avez tapé la commande restart alors que vous êtes arrivé au bout du labyrinthe.
+Afin de confirmer que ce choix n'a pas été effectué par inadvertance je vous invite à valider votre demande en tapant:\n**\`je veux recommencer le labyrinthe\`**`)
     }
-  	message.delete(300)
 
   } else if (cmd == "choix") { // DONNE LES DIFFERENTS CHOIX POSSIBLES EN FONCTION DU SALON OU L'UTILISATEUR SE TROUVE
     const choixCmd = require("./choixCmd.js")
@@ -91,6 +118,13 @@ client.on("message", (message, channel) => {
     comebackCmd(message, prefix, client, member, msgChan, cmd, fileName, fs)
   }
   
+
+    if ((msgChan == exitChan) && (cmd == enterChoice)) {
+      if (member.roles.has(winRole.id)) member.remove(winRole.id).then(rmRole => {
+        member.addRole(role_3I.id)
+        fs.createFileSync(rep_3I + fileName)
+      })
+    }
 
     if (msgChan == chanDoor1) {
 
@@ -347,9 +381,13 @@ client.on("message", (message, channel) => {
 
 // LABYRINTHE PART 1
 client.on("message", (message) => {
+  if ((message.author.bot)||(isReady == false)||(message == null)||(message == undefined)) return;
+  if (message.channel.id == "513786692964974594") return;
   var member = message.guild.member(message.author);
-  var cmd = message.content;  
+  var cmd = message.content.slice(1);
   var fileName = member.id + '.js';
+  var congratMsg = `**${member}**, félicitations ! Vous venez de découvrir la porte d'entrée du discord !\nPour entrer... **\`!entrer\`**\nLes membres présents ont été prévenus de votre arrivée soudaine, vous êtes à présent convié(e) à vous faire votre petite place parmis nous ! ^^\n
+En vous souhaitant la bienvenue par avance, je vous souhaite une bonne installation au nom de la communauté !`;
 
   if ((message.channel == chan_1B) && ((cmd == choice_1C)||(cmd == choice_1D)||(cmd == choice_1A)||(cmd == choice_1))) { // CHAN_1B
 
@@ -449,8 +487,11 @@ client.on("message", (message) => {
 
 // LABYRINTHE PART 2
 client.on("message", (message) => {
+
+  if ((message.author.bot)||(isReady == false)||(message == null)||(message == undefined)) return;
+  if (message.channel.id == "513786692964974594") return;
   var member = message.guild.member(message.author);
-  var cmd = message.content;  
+  var cmd = message.content.slice(1);
   var fileName = member.id + '.js';
 
   if ((message.channel == chan_2A) && ((cmd == choice_1F)||(cmd == choice_2C)||(cmd == choice_2B)||(cmd == choice_2))) { // CHAN_2A
@@ -620,8 +661,11 @@ client.on("message", (message) => {
 
 // LABYRINTHE PART 3
 client.on("message", (message) => {
+
+  if ((message.author.bot)||(isReady == false)||(message == null)||(message == undefined)) return;
+  if (message.channel.id == "513786692964974594") return;
   var member = message.guild.member(message.author);
-  var cmd = message.content;  
+  var cmd = message.content.slice(1);  
   var fileName = member.id + '.js';
 
   if ((message.channel == chan_3B) && ((cmd == choice_3C)||(cmd == choice_3D)||(cmd == choice_3A)||(cmd == choice_3))) { // CHAN_3B
@@ -715,8 +759,7 @@ client.on("message", (message) => {
       if (fs.existsSync(rep_3H + fileName)) fs.unlinkSync(rep_3H + fileName);
       if (fs.existsSync(rep_3J + fileName)) fs.unlinkSync(rep_3J + fileName);
       setTimeout(function() {
-        chan_3I.send(`**${member}**, félicitations ! Vous venez de découvrir la porte d'entrée du discord !\nPour entrer... **\`!entrer\`**\nLes membres présents ont été prévenus de votre arrivée soudaine, vous êtes à présent convié(e) à vous faire votre petite place parmis nous ! ^^\n
-En vous souhaitant la bienvenue par avance, je vous souhaite une bonne installation au nom de la communauté !`)
+        chan_3I.send(congratMsg)
   	  }, 1 * 1500)
   	})
   	if (cmd == choice_3J) member.addRole(role_3J).then(addRole => {
@@ -800,8 +843,7 @@ En vous souhaitant la bienvenue par avance, je vous souhaite une bonne installat
   	  fs.createFileSync(rep_3I + fileName)
   	  if (fs.existsSync(rep_3G + fileName)) fs.unlinkSync(rep_3G + fileName);
   	  setTimeout(function() {
-        chan_3I.send(`**${member}**, félicitations ! Vous venez de découvrir la porte d'entrée du discord !\nPour entrer... **\`!entrer\`**\nLes membres présents ont été prévenus de votre arrivée soudaine, vous êtes à présent convié(e) à vous faire votre petite place parmis nous ! ^^\n
-En vous souhaitant la bienvenue par avance, je vous souhaite une bonne installation au nom de la communauté !`)
+        chan_3I.send(congratMsg)
   	  }, 1 * 1500)
   	})
   	if (member.roles.has(role_3J.id)) member.removeRole(role_3J.id);
@@ -812,8 +854,11 @@ En vous souhaitant la bienvenue par avance, je vous souhaite une bonne installat
 
 // LABYRINTHE PART 4
 client.on("message", (message) => {
+
+  if ((message.author.bot)||(isReady == false)||(message == null)||(message == undefined)) return;
+  if (message.channel.id == "513786692964974594") return;
   var member = message.guild.member(message.author);
-  var cmd = message.content;  
+  var cmd = message.content.slice(1);
   var fileName = member.id + '.js';
 
   if ((message.channel == chan_4B) && ((cmd == choice_4C)||(cmd == choice_4D)||(cmd == choice_4A)||(cmd == choice_4))) { // CHAN_4B
@@ -966,7 +1011,7 @@ client.on("message", (message) => {
       if (fs.existsSync(rep_4E + fileName)) fs.unlinkSync(rep_4E + fileName);
       if (fs.existsSync(rep_4G + fileName)) fs.unlinkSync(rep_4G + fileName);
     })
-      if (cmd == "teleport") member.addRole(role_2E).then(addRole => { // TELEPORTATION VERS CHAN_2E
+      if (cmd == jumpCmd) member.addRole(role_2E).then(addRole => { // TELEPORTATION VERS CHAN_2E
       fs.createFileSync(rep_2E + fileName)
       if (fs.existsSync(rep_4C + fileName)) fs.unlinkSync(rep_4C + fileName);
       if (fs.existsSync(rep_4E + fileName)) fs.unlinkSync(rep_4E + fileName);
